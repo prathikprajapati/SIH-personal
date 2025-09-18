@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Compliance Section */
+        .compliance-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .compliance-overview {
+            text-align: center;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .compliance-overview h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .compliance-overview p {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Compliance Cards */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .compliance-card {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .compliance-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 246, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 246, 255, 0.2);
+        }
+
+        .compliance-badge {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            border-radius: 50%;
+            background: rgba(0, 246, 255, 0.1);
+            border: 2px solid #00f6ff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .compliance-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 246, 255, 0.4) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .compliance-card:hover .compliance-badge::before {
+            opacity: 1;
+        }
+
+        .compliance-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00f6ff;
+        }
+
+        .compliance-status {
+            font-size: 0.9rem;
+            color: #39ff14;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .compliance-description {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .progress-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #00f6ff;
+        }
+
+        .progress-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 2s ease-in-out;
+        }
+
+        .progress-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00f6ff;
+        }
+
+        .progress-percentage {
+            font-size: 1.1rem;
+            color: #39ff14;
+            margin-top: 0.5rem;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            margin-bottom: 4rem;
+        }
+
+        .timeline-title {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #00f6ff;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #00f6ff, #8b5cf6);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #00f6ff;
+            border: 3px solid #0f1117;
+            border-radius: 50%;
+            top: 10px;
+            z-index: 2;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+
+        .timeline-content {
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid rgba(0, 246, 255, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-left: 2rem;
+        }
+
+        .timeline-date {
+            color: #00f6ff;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-event {
+            color: #39ff14;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            box-shadow: 0 4px 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 60px;
+                padding-right: 0;
+            }
+            
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .timeline-dot {
+                left: 20px !important;
+                right: auto !important;
+            }
+            
+            .timeline-content {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .compliance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="compliance.html">Compliance</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Compliance Section -->
+    <section class="compliance-section">
+        <h2 class="section-title">Compliance & Certifications</h2>
+        
+        <div class="compliance-overview">
+            <h3>Industry-Standard Security Compliance</h3>
+            <p>SecureErase maintains the highest level of security compliance to protect your data and meet regulatory requirements. Our platform adheres to international standards and undergoes regular third-party audits to ensure continuous compliance.</p>
+        </div>
+
+        <!-- Compliance Cards -->
+        <div class="compliance-grid">
+            <div class="compliance-card">
+                <div class="compliance-badge">
+                    <i class="fas fa-globe-europe"></i>
+                </div>
+                <h3 class="compliance-name">GDPR</h3>
+                <div class="compliance-status">Fully Compliant</div>
+                <p class="compliance-description">General Data Protection Regulation compliance for European Union data protection requirements.</p>
+            </div>
+            
+            <div class="compliance-card">
+                <div class="compliance-badge">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3 class="compliance-name">HIPAA</h3>
+                <div class="compliance-status">Fully Compliant</div>
+                <p class="compliance-description">Health Insurance Portability and Accountability Act compliance for healthcare data protection.</p>
+            </div>
+            
+            <div class="compliance-card">
+                <div class="compliance-badge">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="compliance-name">ISO/IEC 27001</h3>
+                <div class="compliance-status">Certified</div>
+                <p class="compliance-description">Information Security Management System certification for risk management and security controls.</p>
+            </div>
+            
+            <div class="compliance-card">
+                <div class="compliance-badge">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="compliance-name">NIST SP 800-88</h3>
+                <div class="compliance-status">Compliant</div>
+                <p class="compliance-description">National Institute of Standards and Technology guidelines for media sanitization.</p>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+            <h3 class="progress-title">Compliance Coverage Progress</h3>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-label">Overall Compliance Score</div>
+                <div class="progress-percentage" id="progressPercentage">98%</div>
+            </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="timeline-section">
+            <h3 class="timeline-title">Compliance Timeline & Audits</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">January 2023</div>
+                        <div class="timeline-event">ISO/IEC 27001 Certification</div>
+                        <div class="timeline-description">Achieved full certification for Information Security Management Systems.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">June 2023</div>
+                        <div class="timeline-event">GDPR Compliance Audit</div>
+                        <div class="timeline-description">Third-party audit confirmed full compliance with EU data protection regulations.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">March 2024</div>
+                        <div class="timeline-event">HIPAA Validation</div>
+                        <div class="timeline-description">Completed comprehensive HIPAA compliance validation for healthcare data.</div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">December 2024</div>
+                        <div class="timeline-event">NIST SP 800-88 Verification</div>
+                        <div class="timeline-description">Verified compliance with National Institute of Standards and Technology guidelines.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3 class="cta-title">View Detailed Audit Reports</h3>
+            <p class="cta-description">
+                Access our comprehensive compliance documentation and audit reports to verify our adherence to industry standards.
+            </p>
+            <button class="btn btn-primary">
+                <i class="fas fa-file-alt"></i> View Audit Report
+            </button>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bar
+            const progressFill = document.getElementById('progressFill');
+            const progressPercentage = document.getElementById('progressPercentage');
+            
+            // Animate progress bar
+            anime({
+                targets: progressFill,
+                width: '98%',
+                duration: 2000,
+                easing: 'easeOutQuart'
+            });
+            
+            // Update percentage text
+            anime({
+                targets: progressPercentage,
+                innerHTML: [0, 98],
+                round: 1,
+                duration: 2000,
+                easing: 'easeOutQuart',
+                update: function() {
+                    progressPercentage.textContent = Math.round(progressFill.offsetWidth / progressFill.parentElement.offsetWidth * 100) + '%';
+                }
+            });
+
+            // Animate compliance cards
+            const complianceCards = document.querySelectorAll('.compliance-card');
+            complianceCards.forEach((card, index) => {
+                anime({
+                    targets: card,
+                    opacity: [0, 1],
+                    translateY: [50, 0],
+                    duration: 800,
+                    delay: index * 200,
+                    easing: 'easeOutExpo'
+                });
+            });
+
+            // Add glow effect to badges
+            const badges = document.querySelectorAll('.compliance-badge');
+            badges.forEach(badge => {
+                anime({
+                    targets: badge,
+                    scale: [1, 1.1, 1],
+                    duration: 3000,
+                    loop: true,
+                    direction: 'alternate',
+                    easing: 'easeInOutSine'
+                });
+            });
+
+            // Button hover effect
+            const auditBtn = document.querySelector('.btn-primary');
+            auditBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            auditBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Add hover effects to compliance cards
+            complianceCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Animate timeline items
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                anime({
+                    targets: item,
+                    opacity: [0, 1],
+                    translateX: [index % 2 === 0 ? -50 : 50, 0],
+                    duration: 800,
+                    delay: index * 300,
+                    easing: 'easeOutExpo'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Terms Section */
+        .terms-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .terms-content {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        .terms-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .terms-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-header {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-header i {
+            color: #00f6ff;
+        }
+
+        .section-content {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+        }
+
+        .section-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .roman-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00f6ff;
+            margin-right: 0.5rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            box-shadow: 0 4px 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .section-header {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="terms.html">Terms</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Terms & Conditions Section -->
+    <section class="terms-section">
+        <h2 class="section-title">Terms & Conditions</h2>
+        
+        <div class="terms-content">
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-file-contract"></i> <span class="roman-number">I.</span> Acceptance of Terms</h3>
+                <div class="section-content">
+                    <p>By accessing or using the SecureErase services, you agree to be bound by these Terms & Conditions and all applicable laws and regulations. If you disagree with any part of these terms, you must not use our services.</p>
+                    <p>These terms apply to all visitors, users, and others who access or use the SecureErase service. Your access to and use of the service is conditioned on your acceptance of and compliance with these terms.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-user-shield"></i> <span class="roman-number">II.</span> Intellectual Property</h3>
+                <div class="section-content">
+                    <p>SecureErase owns all intellectual property rights in the software, documentation, and related materials provided as part of the service. All trademarks, trade names, service marks, logos, and other intellectual property used in connection with the service are owned by SecureErase or its licensors.</p>
+                    <p>You acknowledge that you do not acquire any ownership rights in the SecureErase software or intellectual property through your use of the service. Your license to use the software is limited to the scope described in these terms.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-lock"></i> <span class="roman-number">III.</span> User Responsibilities</h3>
+                <div class="section-content">
+                    <p>As a user of the SecureErase service, you agree to:</p>
+                    <ul>
+                        <li>Use the service only for lawful purposes</li>
+                        <li>Provide accurate and complete information when registering for accounts</li>
+                        <li>Maintain the security of your account credentials</li>
+                        <li>Not attempt to interfere with the operation of the service</li>
+                        <li>Not reverse engineer, decompile, or disassemble any software components</li>
+                        <li>Respect the rights of other users and comply with applicable laws</li>
+                    </ul>
+                    <p>You are solely responsible for any activity that occurs under your account and for maintaining the confidentiality of your account information.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-balance-scale"></i> <span class="roman-number">IV.</span> Service Limitations</h3>
+                <div class="section-content">
+                    <p>SecureErase provides the service "as is" without warranties of any kind. We do not guarantee that the service will be uninterrupted, secure, or error-free. The service may be temporarily unavailable due to maintenance, emergencies, or other factors beyond our control.</p>
+                    <p>While we strive to maintain high-quality service, we make no representations or warranties regarding:</p>
+                    <ul>
+                        <li>The accuracy or reliability of the service</li>
+                        <li>The availability of specific features or functionality</li>
+                        <li>The compatibility of the service with your devices</li>
+                        <li>The effectiveness of data erasure on all devices</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-exclamation-triangle"></i> <span class="roman-number">V.</span> Liability & Indemnification</h3>
+                <div class="section-content">
+                    <p>Under no circumstances shall SecureErase be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of or inability to use the service.</p>
+                    <p>To the fullest extent permitted by law, SecureErase shall not be liable for any damages, losses, or expenses incurred by you or any third party in connection with:</p>
+                    <ul>
+                        <li>Any use of or reliance on the service</li>
+                        <li>Any interruption or termination of the service</li>
+                        <li>Any failure to perform the service</li>
+                        <li>Any unauthorized access to or alteration of your data</li>
+                    </ul>
+                    <p>You agree to indemnify and hold harmless SecureErase and its affiliates from any claims, damages, losses, liabilities, costs, and expenses arising from your use of the service or violation of these terms.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-shield-alt"></i> <span class="roman-number">VI.</span> Data Handling & Privacy</h3>
+                <div class="section-content">
+                    <p>Your use of the service is also governed by our Privacy Policy. By using the service, you consent to the collection, use, and sharing of your information as described in our Privacy Policy.</p>
+                    <p>We do not store or retain copies of the data you choose to erase through our service. All data processing occurs locally on your device during the erasure process.</p>
+                    <p>For any data processing activities, we will only collect information necessary to provide the service and will not share your personal information with third parties except as required by law.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-gavel"></i> <span class="roman-number">VII.</span> Termination</h3>
+                <div class="section-content">
+                    <p>We may terminate or suspend your access to the service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+                    <p>All provisions of these Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, and limitations of liability.</p>
+                    <p>Upon termination, your right to use the service will immediately cease. If you wish to terminate your account, you may contact us at any time.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-sync-alt"></i> <span class="roman-number">VIII.</span> Modifications</h3>
+                <div class="section-content">
+                    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.</p>
+                    <p>What constitutes a material change will be determined at our sole discretion. By continuing to access or use our service after any revisions become effective, you agree to be bound by the revised terms.</p>
+                    <p>If you do not agree to the new terms, you must stop using the service immediately.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-headset"></i> <span class="roman-number">IX.</span> Governing Law</h3>
+                <div class="section-content">
+                    <p>These Terms shall be governed and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions.</p>
+                    <p>Any dispute arising out of or in connection with these Terms shall be submitted to the exclusive jurisdiction of the courts located in San Francisco, California, and you hereby consent to such jurisdiction.</p>
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <h3 class="section-header"><i class="fas fa-check-circle"></i> <span class="roman-number">X.</span> Entire Agreement</h3>
+                <div class="section-content">
+                    <p>These Terms constitute the entire agreement between you and SecureErase regarding your use of the service and supersede all prior or contemporaneous understandings, agreements, representations, and warranties, both written and oral.</p>
+                    <p>Any ambiguities in the interpretation of these Terms shall not be construed against the drafting party.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3 class="cta-title">Accept Terms & Conditions</h3>
+            <p class="cta-description">
+                By accepting these terms, you agree to comply with all conditions outlined above. This ensures you can fully utilize our secure data erasure services.
+            </p>
+            <button class="btn btn-primary">
+                <i class="fas fa-check"></i> Accept Terms & Continue
+            </button>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate terms sections
+            const termsSections = document.querySelectorAll('.terms-section');
+            termsSections.forEach((section, index) => {
+                anime({
+                    targets: section,
+                    opacity: [0, 1],
+                    translateY: [50, 0],
+                    duration: 600,
+                    delay: index * 100,
+                    easing: 'easeOutExpo'
+                });
+            });
+
+            // Button hover effect
+            const acceptBtn = document.querySelector('.btn-primary');
+            acceptBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            acceptBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Add hover effects to sections
+            termsSections.forEach(section => {
+                section.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                section.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - SecureErase</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Documentation Section */
+        .documentation-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .sidebar-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 246, 255, 0.1);
+            color: #00f6ff;
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(0, 246, 255, 0.2);
+            color: #00f6ff;
+            border-left: 3px solid #00f6ff;
+        }
+
+        .content-area {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-content {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(0, 246, 255, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .code-language {
+            font-size: 0.9rem;
+            color: #00f6ff;
+            background: rgba(0, 246, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+        }
+
+        .copy-btn {
+            background: rgba(0, 246, 255, 0.1);
+            color: #00f6ff;
+            border: 1px solid rgba(0, 246, 255, 0.3);
+            border-radius: 4px;
+            padding: 0.3rem 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 246, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .code-content {
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 4px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .api-endpoint {
+            background: rgba(0, 246, 255, 0.1);
+            border-left: 3px solid #00f6ff;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .api-method {
+            font-weight: bold;
+            color: #00f6ff;
+            margin-right: 0.5rem;
+        }
+
+        .api-url {
+            color: #39ff14;
+        }
+
+        .api-description {
+            margin-top: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            box-shadow: 0 4px 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .documentation-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .code-block {
+                padding: 1rem;
+            }
+            
+            .code-content {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="documentation.html">Documentation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Documentation Section -->
+    <section class="documentation-section">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h3 class="sidebar-title"><i class="fas fa-bars"></i> Documentation</h3>
+            <ul class="sidebar-nav">
+                <li><a href="#overview" class="active"><i class="fas fa-book"></i> Overview</a></li>
+                <li><a href="#api-reference"><i class="fas fa-code"></i> API Reference</a></li>
+                <li><a href="#integration"><i class="fas fa-plug"></i> Integration Guide</a></li>
+                <li><a href="#examples"><i class="fas fa-terminal"></i> Code Examples</a></li>
+                <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQs</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <h2 class="section-title"><i class="fas fa-book-open"></i> Documentation Overview</h2>
+            
+            <div class="section-content">
+                <p>Welcome to the SecureErase Developer Documentation. This guide provides comprehensive information for integrating our data erasure services into your applications and systems.</p>
+                <p>Our platform offers RESTful APIs and SDKs for various programming languages to seamlessly integrate secure data erasure capabilities into your workflows.</p>
+            </div>
+
+            <div class="section-content">
+                <h3 class="section-title"><i class="fas fa-code"></i> API Reference</h3>
+                <p>The SecureErase API allows you to programmatically manage data erasure requests, retrieve certificates, and monitor service status.</p>
+                
+                <div class="api-endpoint">
+                    <div><span class="api-method">POST</span> <span class="api-url">/api/v1/erase</span></div>
+                    <div class="api-description">Initiates a data erasure process for specified devices</div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div><span class="api-method">GET</span> <span class="api-url">/api/v1/certificates/{id}</span></div>
+                    <div class="api-description">Retrieves a specific erasure certificate by ID</div>
+                </div>
+                
+                <div class="api-endpoint">
+                    <div><span class="api-method">GET</span> <span class="api-url">/api/v1/status</span></div>
+                    <div class="api-description">Checks the current service status and availability</div>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h3 class="section-title"><i class="fas fa-terminal"></i> Code Examples</h3>
+                
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-language">Python</div>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre class="code-content"><code class="language-python">import requests
+import json
+
+# Initialize API client
+base_url = "https://api.secureerase.com/v1"
+headers = {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+}
+
+# Create erasure request
+request_data = {
+    "devices": [
+        {"id": "device_123", "type": "ssd"},
+        {"id": "device_456", "type": "hdd"}
+    ],
+    "options": {
+        "verification": True,
+        "certificate": True
+    }
+}
+
+response = requests.post(
+    f"{base_url}/erase",
+    headers=headers,
+    json=request_data
+)
+
+print(response.json())</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-language">JavaScript</div>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre class="code-content"><code class="language-javascript">const axios = require('axios');
+
+// Initialize API client
+const baseURL = 'https://api.secureerase.com/v1';
+const config = {
+    headers: {
+        'Authorization': 'Bearer YOUR_API_KEY',
+        'Content-Type': 'application/json'
+    }
+};
+
+// Create erasure request
+const requestData = {
+    devices: [
+        { id: 'device_123', type: 'ssd' },
+        { id: 'device_456', type: 'hdd' }
+    ],
+    options: {
+        verification: true,
+        certificate: true
+    }
+};
+
+axios.post(`${baseURL}/erase`, requestData, config)
+    .then(response => {
+        console.log(response.data);
+    })
+    .catch(error => {
+        console.error('Error:', error.response.data);
+    });</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <div class="code-language">JSON</div>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre class="code-content"><code class="language-json">{
+  "request_id": "req_abc123",
+  "devices": [
+    {
+      "id": "device_123",
+      "type": "ssd",
+      "size": "500GB",
+      "model": "Samsung SSD 860 EVO"
+    }
+  ],
+  "status": "processing",
+  "created_at": "2024-01-15T10:30:00Z",
+  "estimated_completion": "2024-01-15T11:00:00Z",
+  "certificate": {
+    "id": "cert_xyz789",
+    "url": "https://api.secureerase.com/certificates/cert_xyz789.pdf"
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <h3 class="section-title"><i class="fas fa-plug"></i> Integration Guide</h3>
+                <p>Integrating SecureErase into your application involves three main steps:</p>
+                <ol>
+                    <li><strong>Authentication:</strong> Obtain an API key from your SecureErase dashboard</li>
+                    <li><strong>Setup:</strong> Configure your development environment with the appropriate SDK</li>
+                    <li><strong>Implementation:</strong> Call our endpoints to initiate and track erasure processes</li>
+                </ol>
+                <p>Refer to our SDK documentation for language-specific implementations and best practices.</p>
+            </div>
+
+            <div class="section-content">
+                <h3 class="section-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+                <p><strong>Q: What programming languages are supported?</strong></p>
+                <p>A: We provide SDKs for Python, JavaScript/Node.js, Java, and C#. Our REST API is compatible with any language that can make HTTP requests.</p>
+                
+                <p><strong>Q: How do I handle rate limiting?</strong></p>
+                <p>A: Our API implements rate limiting of 1000 requests per hour per API key. Exceeding this limit will result in 429 responses. Implement retry logic with exponential backoff.</p>
+                
+                <p><strong>Q: Can I customize the erasure process?</strong></p>
+                <p>A: Yes, our API supports various customization options including verification requirements, certificate generation, and custom logging preferences.</p>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h3 class="cta-title">Explore Full API Documentation</h3>
+                <p class="cta-description">
+                    Access our complete API reference, SDK documentation, and integration guides to build powerful applications with SecureErase.
+                </p>
+                <button class="btn btn-primary">
+                    <i class="fas fa-external-link-alt"></i> View API Reference
+                </button>
+            </div>
+        </main>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize syntax highlighting
+            hljs.highlightAll();
+
+            // Copy to clipboard functionality
+            function copyCode(button) {
+                const codeBlock = button.closest('.code-block');
+                const codeContent = codeBlock.querySelector('.code-content');
+                const codeText = codeContent.innerText;
+                
+                navigator.clipboard.writeText(codeText).then(() => {
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+
+            // Smooth scrolling for sidebar links
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Scroll to section
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Button hover effect
+            const apiBtn = document.querySelector('.btn-primary');
+            apiBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            apiBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Add hover effects to code blocks
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                block.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                block.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshots & Live Demo - SecureErase</title>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 10px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Screenshots Section */
+        .screenshots-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        /* Swiper Container */
+        .swiper {
+            width: 100%;
+            height: 500px;
+            margin-bottom: 3rem;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .slide-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 246, 255, 0.2);
+            border: 2px solid rgba(0, 246, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .swiper-slide:hover .slide-image {
+            transform: scale(1.05);
+        }
+
+        .slide-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(15, 17, 23, 0.9));
+            padding: 2rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .swiper-slide:hover .slide-overlay {
+            transform: translateY(0);
+        }
+
+        .slide-caption {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #00f6ff;
+            font-weight: 600;
+        }
+
+        .slide-description {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Navigation Arrows */
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #00f6ff;
+            background: rgba(15, 17, 23, 0.7);
+            border: 1px solid rgba(0, 246, 255, 0.3);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            background: rgba(0, 246, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 1.5rem;
+        }
+
+        /* Thumbnails */
+        .swiper-thumbs {
+            margin-top: 2rem;
+        }
+
+        .swiper-thumbs .swiper-slide {
+            opacity: 0.5;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .swiper-thumbs .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 246, 255, 0.5);
+        }
+
+        .thumb-image {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 246, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .swiper-thumbs .swiper-slide:hover .thumb-image {
+            transform: scale(1.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .swiper {
+                height: 400px;
+            }
+            
+            .slide-caption {
+                font-size: 1rem;
+            }
+            
+            .slide-description {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .swiper {
+                height: 300px;
+            }
+            
+            .slide-overlay {
+                padding: 1rem;
+            }
+            
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="features.html">Features</a>
+                <a href="workflow.html">Workflow</a>
+                <a href="certificates.html">Certificates</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Screenshots Section -->
+    <section class="screenshots-section">
+        <h2 class="section-title">Screenshots & Live Demo</h2>
+        
+        <!-- Main Carousel -->
+        <div class="swiper main-swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="slide-content">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Boot Menu Interface" class="slide-image">
+                        <div class="slide-overlay">
+                            <div class="slide-caption">Boot Menu Interface</div>
+                            <div class="slide-description">Easy-to-use boot menu with device selection and security options</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-content">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Drive Detection" class="slide-image">
+                        <div class="slide-overlay">
+                            <div class="slide-caption">Drive Detection</div>
+                            <div class="slide-description">Automatic detection and verification of all connected storage devices</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-content">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Wipe Process" class="slide-image">
+                        <div class="slide-overlay">
+                            <div class="slide-caption">Wipe Process</div>
+                            <div class="slide-description">Real-time progress tracking with multi-pass destruction algorithms</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-content">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Certificate Generation" class="slide-image">
+                        <div class="slide-overlay">
+                            <div class="slide-caption">Certificate Generation</div>
+                            <div class="slide-description">Professional certificate with digital signature and verification</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="slide-content">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Advanced Settings" class="slide-image">
+                        <div class="slide-overlay">
+                            <div class="slide-caption">Advanced Settings</div>
+                            <div class="slide-description">Customizable security levels and compliance options</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Arrows -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+
+        <!-- Thumbnails -->
+        <div class="swiper swiper-thumbs">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Boot Menu" class="thumb-image">
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Drive Detection" class="thumb-image">
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Wipe Process" class="thumb-image">
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Certificate" class="thumb-image">
+                </div>
+                <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Settings" class="thumb-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize main swiper with optimized settings
+            const mainSwiper = new Swiper('.main-swiper', {
+                loop: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                speed: 600,
+                watchSlidesProgress: true,
+                threshold: 5,
+                touchRatio: 0.8,
+                simulateTouch: true,
+                allowTouchMove: true,
+                preventClicks: true,
+                preventClicksPropagation: true
+            });
+
+            // Initialize thumbnails swiper
+            const thumbsSwiper = new Swiper('.swiper-thumbs', {
+                loop: true,
+                slidesPerView: 5,
+                spaceBetween: 10,
+                watchSlidesProgress: true,
+                freeMode: true,
+                threshold: 5,
+                touchRatio: 0.8,
+                simulateTouch: true,
+                allowTouchMove: true,
+            });
+
+            // Link the two swipers
+            mainSwiper.controller.control = thumbsSwiper;
+            thumbsSwiper.controller.control = mainSwiper;
+
+            // Optimize performance for thumbnail clicks
+            const thumbSlides = document.querySelectorAll('.swiper-slide');
+            thumbSlides.forEach(slide => {
+                slide.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const slideIndex = Array.from(thumbSlides).indexOf(this);
+                    mainSwiper.slideToLoop(slideIndex);
+                });
+            });
+
+            // Add hover effects to thumbnails
+            thumbSlides.forEach(slide => {
+                slide.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+                
+                slide.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

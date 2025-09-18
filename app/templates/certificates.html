@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 10px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Certificates Section */
+        .certificates-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        /* Certificate Showcase */
+        .certificate-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .certificate-panel {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            text-align: center;
+        }
+
+        /* PDF Preview */
+        #pdf-preview {
+            width: 100%;
+            height: 400px;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        /* JSON Certificate */
+        .json-certificate {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(57, 255, 20, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .json-key {
+            color: #00f6ff;
+        }
+
+        .json-string {
+            color: #39ff14;
+        }
+
+        .json-value {
+            color: #ffffff;
+        }
+
+        .json-brace {
+            color: #8b5cf6;
+        }
+
+        /* Validation Animation */
+        .validation-section {
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .animation-container {
+            width: 300px;
+            height: 200px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .lock-icon {
+            font-size: 4rem;
+            color: #00f6ff;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+
+        .verified-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: #39ff14;
+            opacity: 0;
+            text-shadow: 0 0 20px #39ff14;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Download Section */
+        .download-section {
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            box-shadow: 0 4px 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #00f6ff;
+            border: 2px solid #00f6ff;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .certificate-showcase {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="workflow.html">Workflow</a>
+                <a href="impact.html">Impact</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Certificates Section -->
+    <section class="certificates-section">
+        <h2 class="section-title">Erasure Certificates</h2>
+        
+        <div class="certificate-showcase">
+            <div class="certificate-panel">
+                <h3 class="panel-title">PDF Certificate Preview</h3>
+                <div id="pdf-preview"></div>
+                <p>Professional certificate with digital signature verification</p>
+            </div>
+            
+            <div class="certificate-panel">
+                <h3 class="panel-title">JSON Certificate</h3>
+                <div class="json-certificate" id="json-certificate">
+                    <span class="json-brace">{</span><br>
+                    &nbsp;&nbsp;<span class="json-key">"certificate_id"</span>: <span class="json-string">"abc123-uuid"</span>,<br>
+                    &nbsp;&nbsp;<span class="json-key">"issued_to"</span>: <span class="json-string">"user@example.com"</span>,<br>
+                    &nbsp;&nbsp;<span class="json-key">"erasure_date"</span>: <span class="json-string">"2025-09-15"</span>,<br>
+                    &nbsp;&nbsp;<span class="json-key">"dataset_reference"</span>: <span class="json-string">"User Data - Service X"</span>,<br>
+                    &nbsp;&nbsp;<span class="json-key">"signature"</span>: <span class="json-string">"e3b0c44298fc1c149afbf4c8996..."</span><br>
+                    <span class="json-brace">}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="validation-section">
+            <h3>Verification Process</h3>
+            <p>Secure validation with digital signatures</p>
+            
+            <div class="animation-container">
+                <div class="lock-icon" id="lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="verified-seal" id="verified-seal">
+                    VERIFIED
+                </div>
+            </div>
+        </div>
+
+        <div class="download-section">
+            <h3>Download Your Certificate</h3>
+            <p>Get your verified erasure certificate for compliance purposes</p>
+            
+            <div class="cta-buttons">
+                <button class="btn btn-primary" id="download-btn">
+                    <i class="fas fa-download"></i> Download PDF Certificate
+                </button>
+                <button class="btn btn-secondary" id="view-json-btn">
+                    <i class="fas fa-code"></i> View JSON Proof
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        // Create a simple PDF preview
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate PDF rendering with a placeholder
+            const pdfPreview = document.getElementById('pdf-preview');
+            pdfPreview.innerHTML = `
+                <div style="width:100%; height:100%; background:#f0f0f0; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:8px;">
+                    <div style="text-align:center; padding:20px;">
+                        <i class="fas fa-file-pdf" style="font-size:4rem; color:#e74c3c; margin-bottom:20px;"></i>
+                        <h3 style="color:#333;">SecureErase Certificate</h3>
+                        <p style="color:#666; margin:10px 0;">Certificate ID: abc123-uuid</p>
+                        <p style="color:#666; margin:10px 0;">Validated: 2025-09-15</p>
+                        <div style="margin-top:20px; padding:10px; background:#e8f4f8; border-radius:4px;">
+                            <small style="color:#333;">Digital Signature: e3b0c44298fc1c149afbf4c8996...</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Anime.js validation animation
+            const lockIcon = document.getElementById('lock-icon');
+            const verifiedSeal = document.getElementById('verified-seal');
+            
+            // Initial animation
+            setTimeout(() => {
+                anime({
+                    targets: lockIcon,
+                    scale: [1, 1.2, 1],
+                    duration: 1000,
+                    loop: true,
+                    easing: 'easeInOutSine'
+                });
+                
+                // After 2 seconds, transform lock to tick
+                setTimeout(() => {
+                    anime({
+                        targets: lockIcon,
+                        scale: 0,
+                        opacity: 0,
+                        duration: 800,
+                        easing: 'easeInOutCubic'
+                    });
+                    
+                    // Show verified seal
+                    anime({
+                        targets: verifiedSeal,
+                        opacity: 1,
+                        scale: [0, 1],
+                        duration: 1000,
+                        easing: 'easeOutBounce'
+                    });
+                }, 2000);
+            }, 500);
+            
+            // Button interactions
+            document.getElementById('download-btn').addEventListener('click', function() {
+                alert('PDF certificate downloaded successfully!');
+                // In a real implementation, this would trigger a download
+            });
+            
+            document.getElementById('view-json-btn').addEventListener('click', function() {
+                const jsonPanel = document.querySelector('.json-certificate');
+                jsonPanel.style.border = '1px solid #39ff14';
+                jsonPanel.style.boxShadow = '0 0 20px rgba(57, 255, 20, 0.3)';
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    jsonPanel.style.border = '1px solid rgba(57, 255, 20, 0.3)';
+                    jsonPanel.style.boxShadow = 'none';
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>

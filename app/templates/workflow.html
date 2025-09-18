@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 10px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Workflow Section */
+        .workflow-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 246, 255, 0.1);
+            border: 2px solid #00f6ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #00f6ff;
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #00f6ff;
+        }
+
+        .step p {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        /* Animation Container */
+        .animation-container {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #workflow-animation {
+            width: 100%;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        .step-line {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            top: 30px;
+            left: 0;
+            z-index: 1;
+            transition: width 0.5s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .workflow-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="features.html">Features</a>
+                <a href="certificates.html">Certificates</a>
+            </div>
+        </div>  
+    </nav>
+
+    <!-- Workflow Section -->
+    <section class="workflow-section">
+        <h2 class="section-title">How It Works</h2>
+        
+        <div class="workflow-steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <h3>Boot USB</h3>
+                <p>Insert the SecureErase USB drive into your computer and boot from it. Our lightweight OS automatically detects connected drives.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Detect Drive</h3>
+                <p>Advanced hardware detection identifies all connected storage devices including HDDs, SSDs, and mobile devices with precision.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>One-Click Wipe</h3>
+                <p>Initiate the secure erase process with a single click. Our multi-pass algorithm ensures complete data destruction.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-icon">
+                    <i class="fas fa-file-signature"></i>
+                </div>
+                <h3>Generate Certificate</h3>
+                <p>Receive a detailed certificate of destruction with cryptographic proof of complete data erasure for compliance purposes.</p>
+            </div>
+        </div>
+
+        <div class="animation-container">
+            <h3>Interactive Workflow Animation</h3>
+            <div id="workflow-animation"></div>
+            <p>Watch how the process flows from device detection to secure data destruction</p>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Three.js animation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up scene
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true
+            });
+            
+            renderer.setSize(600, 300);
+            document.getElementById('workflow-animation').appendChild(renderer.domElement);
+            
+            // Create USB drive
+            const usbGeometry = new THREE.BoxGeometry(1, 0.3, 0.2);
+            const usbMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x1a1d28,
+                emissive: 0x000000,
+                specular: 0x00f6ff,
+                shininess: 100
+            });
+            const usb = new THREE.Mesh(usbGeometry, usbMaterial);
+            usb.position.set(-3, 0, 0);
+            scene.add(usb);
+            
+            // Create drive
+            const driveGeometry = new THREE.CylinderGeometry(0.8, 0.8, 0.1, 32);
+            const driveMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0x1a1d28,
+                emissive: 0x000000,
+                specular: 0x00f6ff,
+                shininess: 100
+            });
+            const drive = new THREE.Mesh(driveGeometry, driveMaterial);
+            drive.position.set(0, 0, 0);
+            scene.add(drive);
+            
+            // Create wipe effect
+            const wipeGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+            const wipeMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x00f6ff,
+                transparent: true,
+                opacity: 0.7
+            });
+            const wipe = new THREE.Mesh(wipeGeometry, wipeMaterial);
+            wipe.position.set(3, 0, 0);
+            scene.add(wipe);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0x00f6ff, 1);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            // Position camera
+            camera.position.z = 5;
+            
+            // Animation variables
+            let animationId = null;
+            let time = 0;
+            
+            // Animation function
+            function animate() {
+                animationId = requestAnimationFrame(animate);
+                
+                time += 0.02;
+                
+                // Rotate USB
+                usb.rotation.y += 0.01;
+                usb.rotation.x += 0.005;
+                
+                // Rotate drive
+                drive.rotation.y += 0.01;
+                drive.rotation.x += 0.005;
+                
+                // Animate wipe effect
+                wipe.scale.x = 0.5 + Math.sin(time) * 0.3;
+                wipe.scale.y = 0.5 + Math.sin(time) * 0.3;
+                wipe.scale.z = 0.5 + Math.sin(time) * 0.3;
+                
+                // Move wipe effect
+                wipe.position.x = 3 + Math.sin(time * 2) * 0.5;
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // GSAP timeline for workflow steps
+            gsap.from('.step', {
+                duration: 1,
+                y: 50,
+                opacity: 0,
+                stagger: 0.3,
+                ease: "power2.out"
+            });
+            
+            // Highlight active step
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.addEventListener('mouseenter', () => {
+                    gsap.to(step, {
+                        scale: 1.05,
+                        duration: 0.3,
+                        boxShadow: '0 10px 30px rgba(0, 246, 255, 0.3)'
+                    });
+                    
+                    // Add glow effect to icon
+                    const icon = step.querySelector('.step-icon');
+                    gsap.to(icon, {
+                        scale: 1.2,
+                        duration: 0.3,
+                        textShadow: '0 0 20px #00f6ff'
+                    });
+                });
+                
+                step.addEventListener('mouseleave', () => {
+                    gsap.to(step, {
+                        scale: 1,
+                        duration: 0.3,
+                        boxShadow: 'none'
+                    });
+                    
+                    // Remove glow effect
+                    const icon = step.querySelector('.step-icon');
+                    gsap.to(icon, {
+                        scale: 1,
+                        duration: 0.3,
+                        textShadow: 'none'
+                    });
+                });
+            });
+            
+            // Resize handler
+            window.addEventListener('resize', () => {
+                const container = document.getElementById('workflow-animation');
+                const width = container.clientWidth;
+                const height = 300;
+                
+                renderer.setSize(width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            });
+        });
+    </script>
+</body>
+</html>

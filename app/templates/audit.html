@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Dashboard - SecureErase</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 246, 255, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00f6ff;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        .audit-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 10px rgba(0, 246, 255, 0.5);
+        }
+
+        /* Step Navigation */
+        .step-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .step-navigation::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(0, 246, 255, 0.3);
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+            position: relative;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(15, 17, 23, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #94a3b8;
+            border: 2px solid rgba(0, 246, 255, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 246, 255, 0.2);
+        }
+
+        .step.active .step-number {
+            background: rgba(0, 246, 255, 0.2);
+            color: #00f6ff;
+            border-color: #00f6ff;
+            box-shadow: 0 0 15px rgba(0, 246, 255, 0.4);
+        }
+
+        .step.completed .step-number {
+            background: rgba(0, 246, 255, 0.2);
+            color: #00f6ff;
+            border-color: #00f6ff;
+            box-shadow: 0 0 15px rgba(0, 246, 255, 0.4);
+        }
+
+        .step-label {
+            font-weight: 500;
+            color: #94a3b8;
+            text-shadow: 0 0 5px rgba(0, 246, 255, 0.3);
+        }
+
+        .step.active .step-label {
+            color: #00f6ff;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 246, 255, 0.5);
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 0 5px rgba(0, 246, 255, 0.3);
+        }
+
+        /* Drive Table */
+        .drive-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .drive-table th {
+            background: rgba(0, 246, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #00f6ff;
+            border-bottom: 2px solid rgba(0, 246, 255, 0.3);
+        }
+
+        .drive-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .drive-table tr:hover {
+            background: rgba(0, 246, 255, 0.05);
+        }
+
+        .drive-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            box-shadow: 0 0 5px rgba(0, 246, 255, 0.3);
+        }
+
+        .status-available {
+            background: rgba(22, 163, 74, 0.2);
+            color: #16a34a;
+            border: 1px solid rgba(22, 163, 74, 0.3);
+        }
+
+        .status-selected {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-erased {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin: 2rem 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00f6ff;
+        }
+
+        .progress-percentage {
+            font-weight: 600;
+            color: #00f6ff;
+            text-shadow: 0 0 5px rgba(0, 246, 255, 0.5);
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 246, 255, 0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 246, 255, 0.5);
+        }
+
+        /* Logs Panel */
+        .logs-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 246, 255, 0.1);
+        }
+
+        .log-entry {
+            color: #e5e7eb;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .log-timestamp {
+            color: #6b7280;
+            margin-right: 1rem;
+        }
+
+        .log-info {
+            color: #3b82f6;
+        }
+
+        .log-success {
+            color: #16a34a;
+            text-shadow: 0 0 5px rgba(22, 163, 74, 0.5);
+        }
+
+        .log-warning {
+            color: #f59e0b;
+            text-shadow: 0 0 5px rgba(245, 158, 11, 0.5);
+        }
+
+        .log-error {
+            color: #ef4444;
+            text-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 246, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Charts */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-container {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+            height: 300px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #00f6ff;
+            text-shadow: 0 0 5px rgba(0, 246, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .step-navigation {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+
+            .step-navigation::before {
+                display: none;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="services.html">Services</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="audit-container">
+        <h1 class="page-title"><i class="fas fa-chart-line"></i> Audit Dashboard</h1>
+
+        <!-- Step Navigation -->
+        <div class="step-navigation">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Identify</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Execute</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Verify</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Identify -->
+        <div class="step-content active" id="content1">
+            <h2 class="step-title"><i class="fas fa-search"></i> Scan Connected Drives</h2>
+            <p>Discover all available storage devices connected to your system.</p>
+
+            <table class="drive-table">
+                <thead>
+                    <tr>
+                        <th>Device ID</th>
+                        <th>Type</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="drivesTableBody">
+                    <!-- Drives will be populated dynamically -->
+                </tbody>
+            </table>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="scanDrives()">
+                    <i class="fas fa-sync-alt"></i> Rescan Devices
+                </button>
+                <button class="btn btn-secondary" onclick="nextStep(2)">
+                    <i class="fas fa-arrow-right"></i> Next: Execute
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Execute -->
+        <div class="step-content" id="content2">
+            <h2 class="step-title"><i class="fas fa-bolt"></i> Execute Data Erasure</h2>
+            <p>Perform secure data destruction on selected devices.</p>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <div class="progress-title">Wipe Progress</div>
+                    <div class="progress-percentage" id="progressPercentage">0%</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p>Processing device: DEV-001 (500 GB)</p>
+            </div>
+
+            <div class="logs-panel" id="logsPanel">
+                <div class="log-entry"><span class="log-timestamp">[10:30:15]</span> <span class="log-info">INFO:</span> Starting wipe process for DEV-001</div>
+                <div class="log-entry"><span class="log-timestamp">[10:30:16]</span> <span class="log-info">INFO:</span> Device detected: SSD (500 GB)</div>
+                <div class="log-entry"><span class="log-timestamp">[10:30:17]</span> <span class="log-info">INFO:</span> Initializing secure wipe algorithm</div>
+                <div class="log-entry"><span class="log-timestamp">[10:30:18]</span> <span class="log-success">SUCCESS:</span> Pass 1 completed (25% done)</div>
+                <div class="log-entry"><span class="log-timestamp">[10:30:20]</span> <span class="log-success">SUCCESS:</span> Pass 2 completed (50% done)</div>
+                <div class="log-entry"><span class="log-timestamp">[10:30:22]</span> <span class="log-success">SUCCESS:</span> Pass 3 completed (75% done)</div>
+                <div class="log-entry"><span class="log-timestamp">[10:30:24]</span> <span class="log-success">SUCCESS:</span> Pass 4 completed (100% done)</div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-danger" onclick="cancelErase()">
+                    <i class="fas fa-times"></i> Cancel Erasure
+                </button>
+                <button class="btn btn-primary" onclick="nextStep(3)">
+                    <i class="fas fa-arrow-right"></i> Next: Verify
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Verify -->
+        <div class="step-content" id="content3">
+            <h2 class="step-title"><i class="fas fa-check-circle"></i> Verify & Download Certificate</h2>
+            <p>Confirm successful data erasure and download your certificate.</p>
+
+            <div class="charts-section">
+                <div class="chart-container">
+                    <h3 class="chart-title">Wipe Verification Results</h3>
+                    <canvas id="verificationChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3 class="chart-title">Erase Statistics</h3>
+                    <canvas id="statisticsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="downloadCertificate()">
+                    <i class="fas fa-download"></i> Download Certificate
+                </button>
+                <button class="btn btn-primary" onclick="restartProcess()">
+                    <i class="fas fa-redo"></i> Start New Process
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts with proper sizing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verification Chart
+            const verificationCtx = document.getElementById('verificationChart').getContext('2d');
+            new Chart(verificationCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Successful', 'Failed', 'Pending'],
+                    datasets: [{
+                        data: [95, 3, 2],
+                        backgroundColor: ['#16a34a', '#ef4444', '#f59e0b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
+                    }
+                }
+            });
+
+            // Statistics Chart - Fixed bar chart with proper dimensions
+            const statisticsCtx = document.getElementById('statisticsChart').getContext('2d');
+            new Chart(statisticsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Total Devices', 'Successfully Erased', 'Failed Attempts'],
+                    datasets: [{
+                        data: [4, 3, 1],
+                        backgroundColor: ['#16a34a', '#3b82f6', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Animate progress bar
+            animateProgressBar();
+
+            // Load drives from API
+            loadDrives();
+        });
+
+        // Function to load drives from API
+        async function loadDrives() {
+            try {
+                const response = await fetch('/api/drives');
+                const drives = await response.json();
+                const tbody = document.getElementById('drivesTableBody');
+                tbody.innerHTML = '';
+                drives.forEach(drive => {
+                    const statusClass = getStatusClass(drive.status);
+                    const statusText = getStatusText(drive.status);
+                    const actionButton = drive.is_wipeable ? `<button class="btn btn-primary" onclick="selectDrive('${drive.id}')"><i class="fas fa-check"></i> Select</button>` : '<button class="btn btn-secondary" disabled><i class="fas fa-ban"></i> Not Available</button>';
+                    const row = `
+                        <tr>
+                            <td>${drive.id}</td>
+                            <td>${drive.type}</td>
+                            <td>${drive.capacity}</td>
+                            <td><span class="drive-status ${statusClass}">${statusText}</span></td>
+                            <td>${actionButton}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error loading drives:', error);
+            }
+        }
+
+        // Helper function to get status class
+        function getStatusClass(status) {
+            switch (status) {
+                case 'Ready': return 'status-available';
+                case 'Wiping in progress': return 'status-selected';
+                case 'Wiped': return 'status-erased';
+                case 'Error': return 'status-erased';
+                default: return 'status-available';
+            }
+        }
+
+        // Helper function to get status text
+        function getStatusText(status) {
+            switch (status) {
+                case 'Ready': return 'Available';
+                case 'Wiping in progress': return 'Wiping';
+                case 'Wiped': return 'Erased';
+                case 'Error': return 'Error';
+                default: return status;
+            }
+        }
+
+        // Step navigation
+        function nextStep(step) {
+            // Hide all content
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all steps
+            document.querySelectorAll('.step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+
+            // Show current step
+            document.getElementById(`content${step}`).classList.add('active');
+            document.getElementById(`step${step}`).classList.add('active');
+
+            // Update progress bar
+            if (step === 2) {
+                animateProgressBar();
+            }
+        }
+
+        // Animate progress bar
+        function animateProgressBar() {
+            const progressFill = document.getElementById('progressFill');
+            const progressPercentage = document.getElementById('progressPercentage');
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 2;
+                progressFill.style.width = progress + '%';
+                progressPercentage.textContent = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    // Show success message
+                    Swal.fire({
+                        title: 'Process Complete!',
+                        text: 'Data erasure completed successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'Continue',
+                        customClass: {
+                            popup: 'bg-slate-900 border border-cyan-400/30',
+                            title: 'text-cyan-400',
+                            confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900'
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        // Drive selection
+        function selectDrive(deviceId) {
+            Swal.fire({
+                title: 'Select Device',
+                text: `Are you sure you want to select device ${deviceId}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Select',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'bg-slate-900 border border-cyan-400/30',
+                    title: 'text-cyan-400',
+                    confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900',
+                    cancelButton: 'bg-slate-700 hover:bg-slate-600 text-white'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Update table to show selected
+                    const rows = document.querySelectorAll('.drive-table tbody tr');
+                    rows.forEach(row => {
+                        const deviceIdCell = row.cells[0].textContent;
+                        if (deviceIdCell === deviceId) {
+                            row.cells[3].innerHTML = '<span class="drive-status status-selected">Selected</span>';
+                            row.cells[4].innerHTML = '<button class="btn btn-primary" disabled><i class="fas fa-check"></i> Selected</button>';
+                        }
+                    });
+
+                    Swal.fire({
+                        title: 'Device Selected',
+                        text: `Device ${deviceId} has been selected for erasure.`,
+                        icon: 'success',
+                        customClass: {
+                            popup: 'bg-slate-900 border border-cyan-400/30',
+                            title: 'text-cyan-400',
+                            confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900'
+                        }
+                    });
+                }
+            });
+        }
+
+        // Scan drives
+        function scanDrives() {
+            Swal.fire({
+                title: 'Scanning Devices',
+                text: 'Please wait while we scan for connected drives...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    setTimeout(() => {
+                        Swal.close();
+                        loadDrives(); // Reload drives after scan
+                        Swal.fire({
+                            title: 'Scan Complete',
+                            text: 'Found connected drives.',
+                            icon: 'success',
+                            customClass: {
+                                popup: 'bg-slate-900 border border-cyan-400/30',
+                                title: 'text-cyan-400',
+                                confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900'
+                            }
+                        });
+                    }, 1500);
+                }
+            });
+        }
+
+        // Cancel erasure
+        function cancelErase() {
+            Swal.fire({
+                title: 'Cancel Erasure?',
+                text: 'Are you sure you want to cancel the current erasure process?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Cancel',
+                cancelButtonText: 'No, Continue',
+                customClass: {
+                    popup: 'bg-slate-900 border border-cyan-400/30',
+                    title: 'text-cyan-400',
+                    confirmButton: 'bg-red-500 hover:bg-red-600 text-slate-900',
+                    cancelButton: 'bg-slate-700 hover:bg-slate-600 text-white'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Process Cancelled',
+                        text: 'The erasure process has been cancelled.',
+                        icon: 'info',
+                        customClass: {
+                            popup: 'bg-slate-900 border border-cyan-400/30',
+                            title: 'text-cyan-400',
+                            confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900'
+                        }
+                    });
+                }
+            });
+        }
+
+        // Download certificate
+        function downloadCertificate() {
+            Swal.fire({
+                title: 'Certificate Ready!',
+                text: 'Your data erasure certificate is ready for download.',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Download Certificate',
+                cancelButtonText: 'Close',
+                customClass: {
+                    popup: 'bg-slate-900 border border-cyan-400/30',
+                    title: 'text-cyan-400',
+                    confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900',
+                    cancelButton: 'bg-slate-700 hover:bg-slate-600 text-white'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Simulate download
+                    Swal.fire({
+                        title: 'Downloading...',
+                        text: 'Your certificate is being prepared for download.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                            setTimeout(() => {
+                                Swal.close();
+                                Swal.fire({
+                                    title: 'Download Complete!',
+                                    text: 'Your certificate has been downloaded successfully.',
+                                    icon: 'success',
+                                    customClass: {
+                                        popup: 'bg-slate-900 border border-cyan-400/30',
+                                        title: 'text-cyan-400',
+                                        confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900'
+                                    }
+                                });
+                            }, 1500);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Restart process
+        function restartProcess() {
+            Swal.fire({
+                title: 'Start New Process?',
+                text: 'This will reset the current session and start a new erasure process.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Start New',
+                cancelButtonText: 'No, Continue',
+                customClass: {
+                    popup: 'bg-slate-900 border border-cyan-400/30',
+                    title: 'text-cyan-400',
+                    confirmButton: 'bg-cyan-500 hover:bg-cyan-600 text-slate-900',
+                    cancelButton: 'bg-slate-700 hover:bg-slate-600 text-white'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Reset to first step
+                    nextStep(1);
+
+                    // Reset progress
+                    document.getElementById('progressFill').style.width = '0%';
+                    document.getElementById('progressPercentage').textContent = '0%';
+
+                    // Clear logs
+                    document.getElementById('logsPanel').innerHTML = `
+                        <div class="log-entry"><span class="log-timestamp">[10:30:15]</span> <span class="log-info">INFO:</span> Starting new erasure process</div>
+                        <div class="log-entry"><span class="log-timestamp">[10:30:16]</span> <span class="log-info">INFO:</span> Ready to scan devices</div>
+                    `;
+                }
+            });
+        }
+
+        // Add animation to logs
+        function addLogEntry(message, type = 'info') {
+            const logPanel = document.getElementById('logsPanel');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span> <span class="log-${type}">${type.toUpperCase()}:</span> ${message}`;
+
+            logPanel.appendChild(logEntry);
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+
+        // Simulate log entries
+        setInterval(() => {
+            if (document.getElementById('content2').classList.contains('active')) {
+                const messages = [
+                    'Pass 1 completed (25% done)',
+                    'Pass 2 completed (50% done)',
+                    'Pass 3 completed (75% done)',
+                    'Pass 4 completed (100% done)'
+                ];
+                const types = ['success', 'success', 'success', 'success'];
+                const randomIndex = Math.floor(Math.random() * messages.length);
+                addLogEntry(messages[randomIndex], types[randomIndex]);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

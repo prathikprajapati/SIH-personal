@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollreveal/4.0.9/scrollreveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 10px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* About Section */
+        .about-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .about-text {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .about-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #00f6ff, #8b5cf6);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #00f6ff;
+            border: 3px solid #0f1117;
+            border-radius: 50%;
+            top: 10px;
+            z-index: 2;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: -10px;
+        }
+
+        .timeline-content {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-left: 2rem;
+        }
+
+        .timeline-content h3 {
+            color: #00f6ff;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .timeline-content p {
+            color: #94a3b8;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .timeline-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00f6ff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 60px;
+                padding-right: 0;
+            }
+            
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .timeline-dot {
+                left: 20px !important;
+                right: auto !important;
+            }
+            
+            .timeline-content {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .about-text h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="features.html">Features</a>
+                <a href="workflow.html">Workflow</a>
+                <a href="team.html">Team</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- About Section -->
+    <section class="about-section">
+        <h2 class="section-title">About the Project</h2>
+        
+        <div class="about-text">
+            <h2>Transforming Data Security for the Digital Age</h2>
+            <p>In today's interconnected world, the secure disposal of digital devices has become a critical concern. Every year, millions of electronic devices end up in landfills, carrying with them sensitive personal and corporate data that could fall into the wrong hands.</p>
+            <p>Our project addresses this pressing issue by providing a revolutionary solution that ensures complete, irreversible data destruction through advanced cryptographic methods and industry-certified processes.</p>
+            <p>Founded by cybersecurity experts and data protection specialists, SecureErase was created to bridge the gap between technological advancement and responsible data management, ensuring that digital privacy remains paramount in our increasingly connected society.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-icon">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h3>Legacy Devices</h3>
+                    <p>Old computers, phones, and storage devices contain sensitive data that's often improperly disposed of.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Data Breach Risk</h3>
+                    <p>Improperly erased data can be recovered, leading to identity theft, financial fraud, and corporate espionage.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-icon">
+                        <i class="fas fa-recycle"></i>
+                    </div>
+                    <h3>Environmental Impact</h3>
+                    <p>Electronic waste contributes significantly to environmental pollution without proper recycling protocols.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Our Solution</h3>
+                    <p>SecureErase provides certified, one-click data destruction with complete verification and compliance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize ScrollReveal
+        ScrollReveal().reveal('.about-text h2', {
+            duration: 1000,
+            origin: 'left',
+            distance: '50px',
+            easing: 'ease-out'
+        });
+
+        ScrollReveal().reveal('.about-text p', {
+            duration: 1000,
+            origin: 'left',
+            distance: '50px',
+            delay: 200,
+            easing: 'ease-out'
+        });
+
+        ScrollReveal().reveal('.timeline-item', {
+            duration: 800,
+            origin: 'left',
+            distance: '50px',
+            interval: 200,
+            easing: 'ease-out'
+        });
+    </script>
+</body>
+</html> 

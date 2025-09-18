@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ & Support - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-card {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .faq-card:hover {
+            border-color: rgba(0, 246, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 246, 255, 0.2);
+        }
+
+        .faq-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00f6ff;
+            flex-grow: 1;
+            margin-right: 1rem;
+        }
+
+        .faq-icon {
+            font-size: 1.2rem;
+            color: #00f6ff;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-content.active {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-answer {
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .faq-card.expanded .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            max-width: 800px;
+            margin: 4rem auto;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            box-shadow: 0 4px 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .faq-question {
+                font-size: 1rem;
+            }
+            
+            .faq-answer {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        
+        <div class="faq-container">
+            <!-- FAQ Item 1 -->
+            <div class="faq-card">
+                <div class="faq-header">
+                    <div class="faq-question">How does SecureErase ensure data is completely destroyed?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-answer">
+                        Our proprietary multi-pass wiping algorithm follows military-grade standards including DoD 5220.22-M and NIST SP 800-88 guidelines. We use advanced cryptographic erase techniques that overwrite data multiple times with random patterns, making recovery impossible even with advanced forensic tools.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="faq-card">
+                <div class="faq-header">
+                    <div class="faq-question">Is my data safe during the erasure process?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-answer">
+                        Absolutely. Your data never leaves your device during the erasure process. Our solution operates entirely offline and uses hardware-level operations to ensure complete data destruction without any network transmission. All processes are verified and logged for your peace of mind.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="faq-card">
+                <div class="faq-header">
+                    <div class="faq-question">What types of devices do you support?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-answer">
+                        We support all major storage devices including HDDs, SSDs, NVMe drives, USB flash drives, SD cards, and mobile devices. Our system automatically detects and handles different device types with appropriate wiping algorithms for each format.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="faq-card">
+                <div class="faq-header">
+                    <div class="faq-question">Do you provide certificates for compliance?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-answer">
+                        Yes, every erasure process generates a detailed certificate with cryptographic proof of destruction, timestamp, device information, and verification hashes. These certificates meet regulatory requirements for data destruction and can be exported in PDF and JSON formats.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="faq-card">
+                <div class="faq-header">
+                    <div class="faq-question">How long does the erasure process take?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-answer">
+                        Processing time varies by device size and type. Small USB drives typically complete in under 30 seconds, while larger hard drives may take 5-15 minutes. Our system provides real-time progress updates and estimates based on your specific device.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="faq-card">
+                <div class="faq-header">
+                    <div class="faq-question">What happens if I interrupt the process?</div>
+                    <div class="faq-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                <div class="faq-content">
+                    <div class="faq-answer">
+                        Our system is designed to handle interruptions gracefully. If interrupted, the process will resume from where it left off when you restart. However, we recommend completing the process uninterrupted for optimal results and to avoid potential data inconsistencies.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3 class="cta-title">Didn't find your answer?</h3>
+            <p class="cta-description">
+                Our support team is ready to help you with any questions about SecureErase. We provide 24/7 technical support and comprehensive documentation to ensure you get the most out of our solution.
+            </p>
+            <button class="btn btn-primary" onclick = "window.location.href = 'contact.html';">
+                <i class="fas fa-comments"></i> Contact Support
+            </button>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ Accordion functionality
+            const faqHeaders = document.querySelectorAll('.faq-header');
+            
+            faqHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const faqCard = this.parentElement;
+                    const faqContent = faqCard.querySelector('.faq-content');
+                    const faqIcon = this.querySelector('.faq-icon');
+                    
+                    // Close all other cards
+                    document.querySelectorAll('.faq-card').forEach(card => {
+                        if (card !== faqCard) {
+                            card.classList.remove('expanded');
+                            card.querySelector('.faq-content').classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current card
+                    faqCard.classList.toggle('expanded');
+                    faqContent.classList.toggle('active');
+                });
+            });
+
+            // Animate FAQ cards on page load
+            const faqCards = document.querySelectorAll('.faq-card');
+            faqCards.forEach((card, index) => {
+                anime({
+                    targets: card,
+                    opacity: [0, 1],
+                    translateY: [50, 0],
+                    duration: 600,
+                    delay: index * 100,
+                    easing: 'easeOutExpo'
+                });
+            });
+
+            // Add hover effects to FAQ cards
+            faqCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Button hover effect
+            const contactBtn = document.querySelector('.btn-primary');
+            contactBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            contactBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

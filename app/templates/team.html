@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team & Contributors - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Team Section */
+        .team-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .team-card {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 246, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 246, 255, 0.2);
+        }
+
+        .team-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00f6ff;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .team-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #00f6ff;
+        }
+
+        .team-role {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(0, 246, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #00f6ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 246, 255, 0.3);
+        }
+
+        .social-link:hover {
+            background: rgba(0, 246, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 246, 255, 0.3);
+        }
+
+        .team-bio {
+            margin-top: 1rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .contributor-section {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .contributor-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #00f6ff;
+        }
+
+        .contributors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contributor-card {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .contributor-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 246, 255, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 246, 255, 0.2);
+        }
+
+        .contributor-name {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #00f6ff;
+        }
+
+        .contributor-role {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <h2 class="section-title">Our Team & Contributors</h2>
+        
+        <div class="team-grid">
+            <!-- Team Member 1 -->
+            <div class="team-card" data-tilt>
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Alex Johnson" class="team-avatar">
+                <h3 class="team-name">Alex Johnson</h3>
+                <p class="team-role">Lead Security Engineer</p>
+                <p class="team-bio">Cybersecurity expert with 10+ years of experience in data protection and encryption protocols.</p>
+                <div class="team-social">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            
+            <!-- Team Member 2 -->
+            <div class="team-card" data-tilt>
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Sarah Chen" class="team-avatar">
+                <h3 class="team-name">Sarah Chen</h3>
+                <p class="team-role">Product Manager</p>
+                <p class="team-bio">Former product lead at tech startups, specializing in security-focused SaaS products.</p>
+                <div class="team-social">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            
+            <!-- Team Member 3 -->
+            <div class="team-card" data-tilt>
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Michael Rodriguez" class="team-avatar">
+                <h3 class="team-name">Michael Rodriguez</h3>
+                <p class="team-role">DevOps Engineer</p>
+                <p class="team-bio">Infrastructure specialist with expertise in cloud security and automated deployment pipelines.</p>
+                <div class="team-social">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            
+            <!-- Team Member 4 -->
+            <div class="team-card" data-tilt>
+                <img src="https://images.unsplash.com/photo-1544037986-9e9523a5200b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Emma Wilson" class="team-avatar">
+                <h3 class="team-name">Emma Wilson</h3>
+                <p class="team-role">UX/UI Designer</p>
+                <p class="team-bio">User experience designer focused on creating intuitive security interfaces for complex systems.</p>
+                <div class="team-social">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="contributor-section">
+            <h3 class="contributor-title">Special Contributors</h3>
+            <div class="contributors-grid">
+                <div class="contributor-card">
+                    <div class="contributor-name">Dr. James Park</div>
+                    <div class="contributor-role">Cryptographic Advisor</div>
+                </div>
+                <div class="contributor-card">
+                    <div class="contributor-name">Lisa Thompson</div>
+                    <div class="contributor-role">Compliance Consultant</div>
+                </div>
+                <div class="contributor-card">
+                    <div class="contributor-name">David Kim</div>
+                    <div class="contributor-role">Performance Optimization</div>
+                </div>
+                <div class="contributor-card">
+                    <div class="contributor-name">Maria Santos</div>
+                    <div class="contributor-role">Documentation Specialist</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tilt.js for 3D effect
+            $('.team-card').tilt({
+                glare: true,
+                maxGlare: 0.3,
+                scale: 1.05,
+                maxTilt: 10,
+                speed: 300,
+                easing: "cubic-bezier(.03,.98,.52,.99)"
+            });
+
+            // Animate team cards with anime.js
+            const teamCards = document.querySelectorAll('.team-card');
+            
+            teamCards.forEach((card, index) => {
+                anime({
+                    targets: card,
+                    opacity: [0, 1],
+                    translateY: [50, 0],
+                    duration: 800,
+                    delay: index * 200,
+                    easing: 'easeOutExpo'
+                });
+            });
+
+            // Add hover effects to social links
+            const socialLinks = document.querySelectorAll('.social-link');
+            socialLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.1)';
+                });
+                
+                link.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add glow effect to team cards on hover
+            teamCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 0 25px rgba(0, 246, 255, 0.4)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = '0 10px 30px rgba(0, 246, 255, 0.2)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

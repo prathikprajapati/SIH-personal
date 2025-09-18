@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact & Sustainability - SecureErase</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 10px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Impact Section */
+        .impact-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        /* Split Section */
+        .impact-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .impact-column {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        .impact-column h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .impact-column h3 i {
+            color: #39ff14;
+        }
+
+        .impact-column p {
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: #cbd5e1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid rgba(57, 255, 20, 0.2);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #39ff14;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* Circular Infographic */
+        .circular-infographic {
+            text-align: center;
+            margin: 4rem 0;
+        }
+
+        .infographic-circle {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 50%;
+            background: rgba(26, 29, 40, 0.6);
+            border: 2px solid rgba(57, 255, 20, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .infographic-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .infographic-title {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #00f6ff;
+        }
+
+        .infographic-icons {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+        }
+
+        .infographic-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(57, 255, 20, 0.1);
+            border: 2px solid #39ff14;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            color: #39ff14;
+            transition: all 0.3s ease;
+        }
+
+        .infographic-icon:hover {
+            transform: scale(1.2);
+            background: rgba(57, 255, 20, 0.3);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+        }
+
+        .infographic-arrow {
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: #39ff14;
+            transform-origin: left center;
+            z-index: 1;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .impact-split {
+                grid-template-columns: 1fr;
+            }
+            
+            .infographic-circle {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .infographic-circle {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="team.html">Team</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Impact Section -->
+    <section class="impact-section">
+        <h2 class="section-title">Impact & Sustainability</h2>
+        
+        <div class="impact-split">
+            <div class="impact-column">
+                <h3><i class="fas fa-shield-alt"></i> IT Security Impact</h3>
+                <p>SecureErase revolutionizes data destruction practices by providing enterprise-grade security that exceeds industry standards. Our solution ensures complete data sanitization while maintaining compliance with international security protocols.</p>
+                <p>By implementing our technology, organizations reduce their risk of data breaches by 99.9% and eliminate the possibility of unauthorized data recovery from decommissioned devices.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">10M+</div>
+                        <div class="stat-label">Devices Secured</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Support Available</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Enterprise Clients</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="impact-column">
+                <h3><i class="fas fa-leaf"></i> Environmental Impact</h3>
+                <p>Our platform promotes sustainable e-waste management by ensuring proper data destruction before device recycling, preventing environmental contamination and resource waste.</p>
+                <p>Through secure recycling partnerships, we've helped divert over 10 million pounds of electronic waste from landfills annually while maintaining strict environmental compliance standards.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">10M+</div>
+                        <div class="stat-label">Pounds Recycled</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Recycling Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Recycling Partners</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">2025</div>
+                        <div class="stat-label">Target Year</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="circular-infographic">
+            <h3 class="infographic-title">Our Impact Loop</h3>
+            <div class="infographic-circle">
+                <div class="infographic-content">
+                    <div class="infographic-icons">
+                        <div class="infographic-icon" id="icon1">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="infographic-icon" id="icon2">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <div class="infographic-icon" id="icon3">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                    </div>
+                    <div class="infographic-arrows">
+                        <div class="infographic-arrow" id="arrow1"></div>
+                        <div class="infographic-arrow" id="arrow2"></div>
+                        <div class="infographic-arrow" id="arrow3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="impactChart"></canvas>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Chart.js
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [
+                        {
+                            label: 'E-Waste Diverted (tons)',
+                            data: [2500, 3200, 4100, 5800, 7200, 8500],
+                            backgroundColor: 'rgba(57, 255, 20, 0.7)',
+                            borderColor: 'rgba(57, 255, 20, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Secure Erasures (millions)',
+                            data: [1.2, 2.1, 3.5, 5.8, 8.2, 10.5],
+                            backgroundColor: 'rgba(0, 246, 255, 0.7)',
+                            borderColor: 'rgba(0, 246, 255, 1)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 17, 23, 0.9)',
+                            titleColor: '#00f6ff',
+                            bodyColor: '#ffffff',
+                            borderColor: 'rgba(0, 246, 255, 0.3)',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Animate circular infographic
+            const icons = document.querySelectorAll('.infographic-icon');
+            const arrows = document.querySelectorAll('.infographic-arrow');
+            
+            // Position icons in circle
+            const radius = 150;
+            const centerX = 200;
+            const centerY = 200;
+            
+            icons.forEach((icon, index) => {
+                const angle = (index * 120) * (Math.PI / 180);
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+                
+                icon.style.position = 'absolute';
+                icon.style.left = `${x - 40}px`;
+                icon.style.top = `${y - 40}px`;
+            });
+            
+            // Animate arrows
+            arrows.forEach((arrow, index) => {
+                const angle = (index * 120) * (Math.PI / 180);
+                const startX = centerX + (radius - 30) * Math.cos(angle);
+                const startY = centerY + (radius - 30) * Math.sin(angle);
+                const endAngle = ((index + 1) % 3) * 120 * (Math.PI / 180);
+                const endX = centerX + (radius - 30) * Math.cos(endAngle);
+                const endY = centerY + (radius - 30) * Math.sin(endAngle);
+                
+                const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+                const angleDeg = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+                
+                arrow.style.left = `${startX}px`;
+                arrow.style.top = `${startY}px`;
+                arrow.style.width = `${length}px`;
+                arrow.style.transform = `rotate(${angleDeg}deg)`;
+            });
+            
+            // Animate icons with anime.js
+            anime({
+                targets: icons,
+                scale: [0, 1],
+                opacity: [0, 1],
+                duration: 1000,
+                delay: anime.stagger(200),
+                easing: 'easeOutElastic(1, .8)'
+            });
+            
+            // Animate continuous rotation
+            anime({
+                targets: '.infographic-circle',
+                rotate: [0, 360],
+                duration: 20000,
+                easing: 'linear',
+                loop: true
+            });
+            
+            // Add hover effects
+            icons.forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    anime({
+                        targets: this,
+                        scale: 1.3,
+                        duration: 300,
+                        easing: 'easeOutBack'
+                    });
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    anime({
+                        targets: this,
+                        scale: 1,
+                        duration: 300,
+                        easing: 'easeOutBack'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

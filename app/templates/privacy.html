@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SecureErase</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1117 0%, #1a1d28 50%, #0f1117 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 17, 23, 0.8);
+            border-bottom: 1px solid rgba(0, 246, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            space: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            color: #00f6ff;
+        }
+
+        .nav-links {
+            display: flex;
+            space: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00f6ff;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00f6ff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Privacy Section */
+        .privacy-section {
+            position: relative;
+            z-index: 1;
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00f6ff, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .policy-content {
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 246, 255, 0.1);
+        }
+
+        .policy-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .policy-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-header {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-header i {
+            color: #00f6ff;
+        }
+
+        .section-content {
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-content p {
+            margin-bottom: 1rem;
+        }
+
+        .section-content ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* FAQ Accordion */
+        .faq-section {
+            margin-top: 3rem;
+        }
+
+        .faq-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #00f6ff;
+            text-align: center;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-card {
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00f6ff;
+            flex-grow: 1;
+        }
+
+        .faq-icon {
+            font-size: 1.2rem;
+            color: #00f6ff;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-content {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .faq-content.active {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-answer {
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .faq-card.expanded .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(26, 29, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 246, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #00f6ff;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00f6ff, #0066ff);
+            color: #0f1117;
+            box-shadow: 0 4px 20px rgba(0, 246, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 246, 255, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .section-header {
+                font-size: 1.5rem;
+            }
+            
+            .faq-question {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SecureErase</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="workflow.html">Workflow</a>
+                <a href="impact.html">Impact</a>
+                <a href="certificates.html">Certificates</a>
+                <a href="privacy.html">Privacy</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Privacy Policy Section -->
+    <section class="privacy-section">
+        <h2 class="section-title">Privacy Policy</h2>
+        
+        <div class="policy-content">
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-file-contract"></i> Introduction</h3>
+                <div class="section-content">
+                    <p>This Privacy Policy describes how SecureErase ("we", "us", or "our") collects, uses, and protects your personal information when you use our data erasure services and website.</p>
+                    <p>We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This policy applies to all visitors and users of our website and services.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-user-shield"></i> Information We Collect</h3>
+                <div class="section-content">
+                    <p>We collect information that you provide directly to us when using our services:</p>
+                    <ul>
+                        <li><strong>Personal Information:</strong> Name, email address, company information, and contact details provided during registration or service requests</li>
+                        <li><strong>Usage Data:</strong> Information about how you interact with our website and services, including IP address, browser type, and pages visited</li>
+                        <li><strong>Service Information:</strong> Details about the devices you wish to erase, service requests, and certificate information</li>
+                    </ul>
+                    <p>We do not collect sensitive personal data beyond what is necessary for providing our services.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-lock"></i> How We Use Your Information</h3>
+                <div class="section-content">
+                    <p>We use your information for the following purposes:</p>
+                    <ul>
+                        <li>To provide and maintain our services</li>
+                        <li>To process your data erasure requests</li>
+                        <li>To communicate with you about your account or services</li>
+                        <li>To improve our website and services</li>
+                        <li>To comply with legal obligations</li>
+                        <li>To prevent fraud and protect our security</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-trash-alt"></i> Data Retention & Erasure</h3>
+                <div class="section-content">
+                    <p>We retain your information only for as long as necessary to provide our services and comply with legal requirements:</p>
+                    <ul>
+                        <li>Account information: As long as your account is active</li>
+                        <li>Service records: 5 years after service completion</li>
+                        <li>Communication logs: 2 years after last interaction</li>
+                    </ul>
+                    <p>You have the right to request deletion of your personal information at any time. Upon request, we will securely delete your data in accordance with applicable laws.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-shield-alt"></i> Data Protection</h3>
+                <div class="section-content">
+                    <p>We implement appropriate technical and organizational measures to protect your personal information:</p>
+                    <ul>
+                        <li>Encryption of data in transit and at rest</li>
+                        <li>Regular security audits and vulnerability assessments</li>
+                        <li>Access controls and authentication mechanisms</li>
+                        <li>Secure server infrastructure and network monitoring</li>
+                    </ul>
+                    <p>While we strive to protect your information, no method of transmission over the internet or electronic storage is 100% secure.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-globe"></i> Third-Party Services</h3>
+                <div class="section-content">
+                    <p>We may use third-party services to assist in providing our services:</p>
+                    <ul>
+                        <li>Cloud hosting providers for service delivery</li>
+                        <li>Email service providers for communication</li>
+                        <li>Analytics services for website improvement</li>
+                    </ul>
+                    <p>These third parties are contractually obligated to maintain the confidentiality of your information and use it only for the purposes specified in our agreement with them.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-user-secret"></i> Your Rights</h3>
+                <div class="section-content">
+                    <p>Under applicable privacy laws, you have the following rights regarding your personal information:</p>
+                    <ul>
+                        <li><strong>Right to Access:</strong> Request access to your personal data</li>
+                        <li><strong>Right to Rectification:</strong> Request correction of inaccurate data</li>
+                        <li><strong>Right to Erasure:</strong> Request deletion of your data</li>
+                        <li><strong>Right to Restrict Processing:</strong> Limit how your data is used</li>
+                        <li><strong>Right to Data Portability:</strong> Receive your data in a portable format</li>
+                        <li><strong>Right to Object:</strong> Object to processing of your data</li>
+                    </ul>
+                    <p>To exercise any of these rights, please contact us using the information provided below.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-sync-alt"></i> Policy Updates</h3>
+                <div class="section-content">
+                    <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.</p>
+                    <p>We encourage you to review this Privacy Policy periodically for any changes. Your continued use of our services after any modifications constitutes your acceptance of the updated policy.</p>
+                </div>
+            </div>
+
+            <div class="policy-section">
+                <h3 class="section-header"><i class="fas fa-headset"></i> Contact Us</h3>
+                <div class="section-content">
+                    <p>If you have any questions about this Privacy Policy or our data practices, please contact us:</p>
+                    <p><strong>Email:</strong> privacy@secureerase.com</p>
+                    <p><strong>Address:</strong> 123 Security Boulevard, San Francisco, CA 94103</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h3 class="faq-title">Frequently Asked Questions</h3>
+            <div class="faq-container">
+                <!-- FAQ Item 1 -->
+                <div class="faq-card">
+                    <div class="faq-header">
+                        <div class="faq-question">What personal data do you collect?</div>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            We collect minimal personal information necessary for our services, including your name, email address, company details, and information about devices you wish to erase. We do not collect sensitive personal data beyond what is required for service delivery.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-card">
+                    <div class="faq-header">
+                        <div class="faq-question">How long do you keep my data?</div>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            We retain your data only as long as necessary for providing our services. Account information is kept while your account is active, and service records are retained for 5 years after completion. You can request deletion of your data at any time.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-card">
+                    <div class="faq-header">
+                        <div class="faq-question">Can I request deletion of my data?</div>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            Yes, you have the right to request deletion of your personal information. We will securely delete your data in accordance with applicable laws upon receiving your request. Please contact us at privacy@secureerase.com to initiate this process.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-card">
+                    <div class="faq-header">
+                        <div class="faq-question">How do you protect my data?</div>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            We implement robust security measures including encryption, access controls, regular security audits, and secure server infrastructure. All data is protected using industry-standard security protocols to ensure your information remains confidential and secure.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3 class="cta-title">Download Full Privacy Policy</h3>
+            <p class="cta-description">
+                Get the complete privacy policy document in PDF format for your records and reference.
+            </p>
+            <button class="btn btn-primary">
+                <i class="fas fa-download"></i> Download PDF Policy
+            </button>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // FAQ Accordion functionality
+            const faqHeaders = document.querySelectorAll('.faq-header');
+            
+            faqHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const faqCard = this.parentElement;
+                    const faqContent = faqCard.querySelector('.faq-content');
+                    const faqIcon = this.querySelector('.faq-icon');
+                    
+                    // Toggle current card
+                    faqCard.classList.toggle('expanded');
+                    faqContent.classList.toggle('active');
+                });
+            });
+
+            // Animate FAQ cards
+            const faqCards = document.querySelectorAll('.faq-card');
+            faqCards.forEach((card, index) => {
+                anime({
+                    targets: card,
+                    opacity: [0, 1],
+                    translateY: [50, 0],
+                    duration: 600,
+                    delay: index * 100,
+                    easing: 'easeOutExpo'
+                });
+            });
+
+            // Button hover effect
+            const downloadBtn = document.querySelector('.btn-primary');
+            downloadBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            downloadBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+
+            // Add hover effects to FAQ cards
+            faqCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
