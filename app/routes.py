@@ -1,9 +1,12 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for, send_file
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, send_file, flash
 from .mock_data import mock_drives_data
 from .wiping_logic import simulate_wipe
 from .certificate_generator import CertificateGenerator
+from .models import CertificateVerification, db
 import os
 import uuid
+import hashlib
+from datetime import datetime
 
 main = Blueprint('main', __name__)
 
@@ -183,6 +186,55 @@ def download_certificate(drive_id):
     os.makedirs(cert_dir, exist_ok=True)
 
     cert_gen.output_path = cert_path
-    cert_gen.generate_certificate(drive, wipe_method, serial_number)
+    cert_path, random_text = cert_gen.generate_certificate(drive, wipe_method, serial_number)
+
+    # Store verification data in database
+    verification_key = CertificateVerification.hash_text(random_text)
+    cert_verification = CertificateVerification(
+        certificate_id=serial_number,
+        verification_key=verification_key,
+        random_text=random_text
+    )
+
+    try:
+        db.session.add(cert_verification)
+        db.session.commit()
+    except Exception as e:
+        # If database operation fails, still allow certificate download
+        print(f"Database error: {e}")
 
     return send_file(cert_path, as_attachment=True, download_name=f"certificate_{serial_number}.pdf")
+
+# Certificate Verification Routes
+@main.route('/verify')
+def verify():
+    return render_template('verify.html')
+
+@main.route('/verify_certificate', methods=['POST'])
+def verify_certificate():
+    verification_code = request.form.get('verification_code', '').strip()
+
+    if not verification_code:
+        flash('Please enter a verification code', 'error')
+        return redirect(url_for('main.verify'))
+
+    # Hash the entered code
+    entered_hash = CertificateVerification.hash_text(verification_code)
+
+    # Check if the hash exists in database
+    certificate = CertificateVerification.query.filter_by(verification_key=entered_hash).first()
+
+    if certificate:
+        # Mark as verified
+        certificate.is_verified = True
+        certificate.verified_at = datetime.utcnow()
+        db.session.commit()
+
+        return render_template('verify.html',
+                             verified=True,
+                             certificate=certificate,
+                             message="✅ Certificate Verified Successfully!")
+    else:
+        return render_template('verify.html',
+                             verified=False,
+                             message="❌ Invalid verification code. Certificate not found.")

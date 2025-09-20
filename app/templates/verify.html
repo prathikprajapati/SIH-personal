@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification - Reboot Reclaim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .verification-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 50px auto;
+            max-width: 600px;
+        }
+        .verification-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        .verification-body {
+            padding: 40px;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            font-size: 16px;
+        }
+        .form-control:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+        .btn-verify {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+        .certificate-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #4CAF50;
+        }
+        .qr-instructions {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .steps {
+            counter-reset: step-counter;
+        }
+        .step {
+            counter-increment: step-counter;
+            margin-bottom: 15px;
+            padding-left: 40px;
+            position: relative;
+        }
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #4CAF50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="verification-container">
+            <div class="verification-header">
+                <h2><i class="fas fa-certificate"></i> Certificate Verification</h2>
+                <p class="mb-0">Verify the authenticity of your data wipe certificate</p>
+            </div>
+
+            <div class="verification-body">
+                <div class="qr-instructions">
+                    <h5><i class="fas fa-qrcode"></i> How to Verify Your Certificate</h5>
+                    <div class="steps">
+                        <div class="step">
+                            <strong>Download your certificate</strong> - Get your certificate after wiping a drive
+                        </div>
+                        <div class="step">
+                            <strong>Scan the QR code</strong> - Use any QR code reader to scan the code on your certificate
+                        </div>
+                        <div class="step">
+                            <strong>Enter the code</strong> - Type the verification code below
+                        </div>
+                        <div class="step">
+                            <strong>Get verification</strong> - We'll confirm if your certificate is authentic
+                        </div>
+                    </div>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% if message %}
+                    <div class="alert {% if '✅' in message %}alert-success{% else %}alert-danger{% endif %}">
+                        <h5>{{ message }}</h5>
+                    </div>
+                {% endif %}
+
+                {% if not verified %}
+                    <form method="POST" action="{{ url_for('main.verify_certificate') }}">
+                        <div class="mb-4">
+                            <label for="verification_code" class="form-label">
+                                <i class="fas fa-key"></i> Verification Code
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="verification_code"
+                                   name="verification_code"
+                                   placeholder="Enter the code from your QR scan"
+                                   required
+                                   autocomplete="off">
+                            <div class="form-text">
+                                Scan the QR code on your certificate to get this code
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-verify">
+                                <i class="fas fa-check-circle"></i> Verify Certificate
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
+
+                {% if verified and certificate %}
+                    <div class="certificate-info">
+                        <h5><i class="fas fa-info-circle"></i> Certificate Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Certificate ID:</strong><br>{{ certificate.certificate_id }}</p>
+                                <p><strong>Created:</strong><br>{{ certificate.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Status:</strong><br>
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check"></i> Verified
+                                    </span>
+                                </p>
+                                <p><strong>Verified:</strong><br>{{ certificate.verified_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('main.home') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-home"></i> Back to Home
+                    </a>
+                    <a href="{{ url_for('main.demo') }}" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-play-circle"></i> Try Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
