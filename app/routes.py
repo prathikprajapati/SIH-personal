@@ -272,6 +272,11 @@ def demo_html():
     return redirect(url_for("main.demo"))
 
 
+@main.route("/verify.html")
+def verify_html():
+    return redirect(url_for("main.verify"))
+
+
 @main.route("/download_certificate/<drive_id>")
 def download_certificate(drive_id):
     drive = next((d for d in mock_drives_data if d["id"] == drive_id), None)
