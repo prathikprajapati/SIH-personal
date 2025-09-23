@@ -1,0 +1,10 @@
+{
+    "web_hub_url": "http://localhost:5000",
+    "offline_mode": true,
+    "log_level": "INFO",
+    "supported_methods": {
+        "HDD": ["ATA_Secure_Erase", "NIST_Purge", "DoD_Wipe"],
+        "SSD": ["ATA_Secure_Erase", "NIST_Purge", "Secure_Erase"],
+        "NVMe": ["NVMe_Secure_Erase", "NVMe_Format", "Crypto_Erase"]
+    }
+}

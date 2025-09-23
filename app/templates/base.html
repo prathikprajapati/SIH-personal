@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Reboot Reclaim - Secure Data Erasure{% endblock %}</title>
+
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/typeit@8.7.1/dist/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/unified.css') }}" rel="stylesheet">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Unified Navigation -->
+    <nav class="navbar" id="main-navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>🔒 Reboot Reclaim</span>
+            </div>
+
+            <div class="nav-links" id="nav-links">
+                <a href="{{ url_for('main.home') }}" {% if request.endpoint == 'main.home' %}class="active"{% endif %}>
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="{{ url_for('main.demo') }}" {% if request.endpoint == 'main.demo' %}class="active"{% endif %}>
+                    <i class="fas fa-play-circle"></i> Demo
+                </a>
+                <a href="{{ url_for('devices.devices') }}" {% if request.endpoint == 'devices.devices' %}class="active"{% endif %}>
+                    <i class="fas fa-hdd"></i> Devices
+                </a>
+                <a href="{{ url_for('main.verify') }}" {% if request.endpoint == 'main.verify' %}class="active"{% endif %}>
+                    <i class="fas fa-certificate"></i> Verify
+                </a>
+                <a href="{{ url_for('blockchain.blockchain') }}" {% if request.endpoint == 'blockchain.blockchain' %}class="active"{% endif %}>
+                    <i class="fas fa-link"></i> Blockchain
+                </a>
+                <a href="{{ url_for('main.audit') }}" {% if request.endpoint == 'main.audit' %}class="active"{% endif %}>
+                    <i class="fas fa-chart-line"></i> Audit
+                </a>
+                <a href="{{ url_for('main.about') }}" {% if request.endpoint == 'main.about' %}class="active"{% endif %}>
+                    <i class="fas fa-info-circle"></i> About
+                </a>
+                <a href="{{ url_for('main.contact') }}" {% if request.endpoint == 'main.contact' %}class="active"{% endif %}>
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- WebSocket Connection Status -->
+    <div class="connection-status" id="connection-status">
+        <i class="fas fa-circle"></i>
+        <span>Connected</span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-cog fa-spin"></i>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Core JavaScript -->
+    <script src="{{ url_for('static', filename='js/unified.js') }}"></script>
+
+    <!-- WebSocket Client -->
+    <script>
+        // Initialize WebSocket connection for real-time updates
+        const ws = new WebSocket('ws://' + window.location.host + '/ws');
+
+        ws.onopen = function(event) {
+            console.log('WebSocket connected');
+            updateConnectionStatus('connected');
+        };
+
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            handleWebSocketMessage(data);
+        };
+
+        ws.onclose = function(event) {
+            console.log('WebSocket disconnected');
+            updateConnectionStatus('disconnected');
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+            updateConnectionStatus('error');
+        };
+
+        function updateConnectionStatus(status) {
+            const statusEl = document.getElementById('connection-status');
+            const icon = statusEl.querySelector('i');
+            const text = statusEl.querySelector('span');
+
+            statusEl.className = `connection-status ${status}`;
+
+            switch(status) {
+                case 'connected':
+                    icon.className = 'fas fa-circle';
+                    icon.style.color = '#16a34a';
+                    text.textContent = 'Connected';
+                    break;
+                case 'disconnected':
+                    icon.className = 'fas fa-circle';
+                    icon.style.color = '#ef4444';
+                    text.textContent = 'Disconnected';
+                    break;
+                case 'error':
+                    icon.className = 'fas fa-exclamation-triangle';
+                    icon.style.color = '#f59e0b';
+                    text.textContent = 'Error';
+                    break;
+            }
+        }
+
+        function handleWebSocketMessage(data) {
+            // Handle different types of real-time updates
+            switch(data.type) {
+                case 'device_update':
+                    if (window.updateDeviceStatus) {
+                        window.updateDeviceStatus(data.device_id, data.status);
+                    }
+                    break;
+                case 'progress_update':
+                    if (window.updateProgress) {
+                        window.updateProgress(data.progress, data.message);
+                    }
+                    break;
+                case 'blockchain_update':
+                    if (window.updateBlockchain) {
+                        window.updateBlockchain(data);
+                    }
+                    break;
+                case 'notification':
+                    showNotification(data.title, data.message, data.type);
+                    break;
+            }
+        }
+
+        function showNotification(title, message, type = 'info') {
+            // Use SweetAlert2 for notifications
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: type,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'notification-popup'
+                }
+            });
+        }
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

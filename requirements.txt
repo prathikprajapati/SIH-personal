@@ -1,0 +1,7 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-SocketIO==5.3.6
+PyMySQL==1.1.2
+fpdf==1.7.2
+qrcode==7.4.2
+Pillow==10.0.1

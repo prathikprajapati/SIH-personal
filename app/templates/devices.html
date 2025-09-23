@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connected Devices - Reboot Reclaim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/devices.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🔒 Reboot Reclaim</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/demo">Demo</a>
+                <a class="nav-link" href="/devices">Devices</a>
+                <a class="nav-link" href="/verify">Verify</a>
+                <a class="nav-link" href="/blockchain">Blockchain</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="mb-0">💾 Connected Storage Devices</h1>
+                        <p class="text-muted">Select devices to securely wipe and generate certificates</p>
+                    </div>
+                    <button class="btn btn-outline-primary" onclick="refreshDevices()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <!-- Device Statistics -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-hdd"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="total-devices">0</h3>
+                                <p>Total Devices</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon ready">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="ready-devices">0</h3>
+                                <p>Ready to Wipe</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon wiping">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="wiping-devices">0</h3>
+                                <p>In Progress</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon completed">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="completed-devices">0</h3>
+                                <p>Wiped</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="bulk-actions mb-4" id="bulk-actions" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span id="selected-count">0 devices selected</span>
+                        </div>
+                        <div>
+                            <button class="btn btn-warning me-2" onclick="selectAllDevices()">
+                                <i class="fas fa-check-square"></i> Select All
+                            </button>
+                            <button class="btn btn-secondary me-2" onclick="clearSelection()">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
+                            <button class="btn btn-danger" onclick="showWipeConfirmation()" id="bulk-wipe-btn">
+                                <i class="fas fa-eraser"></i> Wipe Selected
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Devices Grid -->
+                <div class="row" id="devices-container">
+                    <!-- Devices will be loaded here -->
+                </div>
+
+                <!-- Loading indicator -->
+                <div id="loading-indicator" class="text-center" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading devices...</p>
+                </div>
+
+                <!-- No devices message -->
+                <div id="no-devices" class="text-center" style="display: none;">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle fa-3x mb-3"></i>
+                        <h5>No storage devices detected</h5>
+                        <p>Connect storage devices to your system to see them here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wipe Confirmation Modal -->
+    <div class="modal fade" id="wipeConfirmationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                        Confirm Data Wipe
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-warning"></i> DANGER: This action cannot be undone!</h6>
+                        <p>You are about to permanently erase all data from the selected devices. This process will:</p>
+                        <ul>
+                            <li>Completely destroy all data on the selected devices</li>
+                            <li>Make data recovery impossible using any known methods</li>
+                            <li>Generate tamper-proof certificates for compliance</li>
+                        </ul>
+                    </div>
+
+                    <h6>Selected Devices:</h6>
+                    <div id="selected-devices-list" class="mb-3">
+                        <!-- Selected devices will be listed here -->
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="understand-checkbox">
+                        <label class="form-check-label" for="understand-checkbox">
+                            I understand that this action will permanently destroy all data on the selected devices
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirm-wipe-btn" disabled>
+                        <i class="fas fa-eraser"></i> Confirm Wipe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div class="modal fade" id="progressModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-cog fa-spin"></i>
+                        Wiping Devices...
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div id="progress-content">
+                        <!-- Progress content will be dynamically updated -->
+                    </div>
+                </div>
+                <div class="modal-footer" id="progress-footer" style="display: none;">
+                    <button type="button" class="btn btn-success" id="view-certificates-btn">
+                        <i class="fas fa-certificate"></i> View Certificates
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="location.reload()">
+                        <i class="fas fa-redo"></i> Wipe More Devices
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/devices.js') }}"></script>
+</body>
+</html>

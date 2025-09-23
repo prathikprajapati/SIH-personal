@@ -1,0 +1,320 @@
++<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reboot-Reclaim WebSocket Demo</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .status.connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            transition: width 0.3s ease;
+        }
+
+        .device-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        .verification-result {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .verification-result.success {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .verification-result.error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .blockchain-info {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .devices-info {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .progress-info {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .logs {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            margin: 2px 0;
+        }
+
+        .log-info { color: #007bff; }
+        .log-success { color: #28a745; }
+        .log-error { color: #dc3545; }
+        .log-warning { color: #ffc107; }
+    </style>
+</head>
+<body>
+    <h1>Reboot-Reclaim WebSocket Demo</h1>
+
+    <div class="status" id="connection-status">
+        <strong>Status:</strong> Disconnected
+    </div>
+
+    <div class="controls">
+        <button onclick="connectWebSocket()">Connect</button>
+        <button onclick="disconnectWebSocket()">Disconnect</button>
+        <button onclick="pingServer()">Ping</button>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>Blockchain Status</h2>
+            <button onclick="requestBlockchainStatus()">Get Blockchain Status</button>
+            <div id="blockchain-status">Click to load blockchain status</div>
+        </div>
+
+        <div class="section">
+            <h2>Certificate Verification</h2>
+            <input type="text" id="cert-id" placeholder="Enter Certificate ID">
+            <button onclick="verifyCertificate()">Verify Certificate</button>
+            <div id="verification-result">Enter a certificate ID and click verify</div>
+        </div>
+
+        <div class="section">
+            <h2>Device Management</h2>
+            <button onclick="requestDeviceStatus()">Get Device Status</button>
+            <button onclick="startWipeProcess()">Start Wipe Process</button>
+            <div id="device-status">Click to load device status</div>
+            <div id="wipe-progress" style="display: none;"></div>
+        </div>
+
+        <div class="section">
+            <h2>Event Logs</h2>
+            <div class="logs" id="event-logs"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/websocket_client.js') }}"></script>
+    <script>
+        let wsClient = null;
+
+        function connectWebSocket() {
+            if (wsClient) {
+                wsClient.disconnect();
+            }
+
+            wsClient = new RebootReclaimWebSocket();
+
+            // Add event listeners
+            wsClient.on('connected', () => {
+                updateStatus('Connected', 'connected');
+                logEvent('Connected to server', 'success');
+            });
+
+            wsClient.on('disconnected', (data) => {
+                updateStatus('Disconnected', 'disconnected');
+                logEvent(`Disconnected: ${data.reason}`, 'warning');
+            });
+
+            wsClient.on('connection_error', (data) => {
+                logEvent(`Connection error: ${data.error}`, 'error');
+            });
+
+            wsClient.on('blockchain_status', (data) => {
+                logEvent('Blockchain status received', 'info');
+            });
+
+            wsClient.on('verification_result', (data) => {
+                logEvent(`Verification result: ${data.message}`, data.verified ? 'success' : 'error');
+            });
+
+            wsClient.on('device_status', (data) => {
+                logEvent('Device status received', 'info');
+            });
+
+            wsClient.on('wipe_progress', (data) => {
+                logEvent(`Wipe progress: ${data.progress}%`, 'info');
+            });
+
+            wsClient.on('wipe_complete', (data) => {
+                logEvent('Wipe completed', 'success');
+            });
+
+            wsClient.on('error', (data) => {
+                logEvent(`Error: ${data.message}`, 'error');
+            });
+
+            wsClient.connect();
+        }
+
+        function disconnectWebSocket() {
+            if (wsClient) {
+                wsClient.disconnect();
+                wsClient = null;
+            }
+            updateStatus('Disconnected', 'disconnected');
+        }
+
+        function pingServer() {
+            if (wsClient) {
+                wsClient.ping();
+                logEvent('Ping sent', 'info');
+            }
+        }
+
+        function requestBlockchainStatus() {
+            if (wsClient) {
+                wsClient.requestBlockchainStatus();
+            }
+        }
+
+        function verifyCertificate() {
+            const certId = document.getElementById('cert-id').value;
+            if (certId && wsClient) {
+                wsClient.verifyCertificate(certId);
+            }
+        }
+
+        function requestDeviceStatus() {
+            if (wsClient) {
+                wsClient.requestDeviceStatus();
+            }
+        }
+
+        function startWipeProcess() {
+            if (wsClient) {
+                wsClient.startWipeProcess('DEMO_DEVICE', 'Demo Wipe');
+                document.getElementById('wipe-progress').style.display = 'block';
+            }
+        }
+
+        function updateStatus(message, className) {
+            const statusDiv = document.getElementById('connection-status');
+            statusDiv.textContent = `Status: ${message}`;
+            statusDiv.className = `status ${className}`;
+        }
+
+        function logEvent(message, type) {
+            const logsDiv = document.getElementById('event-logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(logEntry);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        // Auto-connect on page load
+        window.addEventListener('load', () => {
+            logEvent('Page loaded, attempting to connect...', 'info');
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>
