@@ -1,4 +1,2 @@
-this is a samples file
-made some chnges 
 
-Welcome to 
+Hello this is my git repo 
